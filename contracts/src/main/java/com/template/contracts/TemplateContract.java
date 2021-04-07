@@ -1,6 +1,6 @@
 package com.template.contracts;
 
-import com.template.states.TemplateState;
+import com.template.states.IOUState;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.CommandWithParties;
 import net.corda.core.contracts.Contract;
@@ -8,7 +8,6 @@ import net.corda.core.transactions.LedgerTransaction;
 
 import static net.corda.core.contracts.ContractsDSL.requireSingleCommand;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
-import java.util.List;
 
 // ************
 // * Contract *
@@ -29,12 +28,12 @@ public class TemplateContract implements Contract {
 
         if (commandData.equals(new Commands.Send())) {
             //Retrieve the output state of the transaction
-            TemplateState output = tx.outputsOfType(TemplateState.class).get(0);
+            IOUState output = tx.outputsOfType(IOUState.class).get(0);
 
             //Using Corda DSL function requireThat to replicate conditions-checks
             requireThat(require -> {
                 require.using("No inputs should be consumed when sending the Hello-World message.", tx.getInputStates().size() == 0);
-                require.using("The message must be Hello-World", output.getMsg().equals("Hello-World"));
+                //require.using("The message must be Hello-World", output.getValue().equals("Hello-World"));
                 return null;
             });
         }
